@@ -1,51 +1,55 @@
 import getConnection from "../config/db.js";
-class SingerController {
 
+class SingerController {
     async index(req, res) {
         res.send("Singer index");
     }
 
     async createSinger(req, res) {
-
+        console.log("Request body:", req.body);
         const { name, realName, birthDate, nationality, genre, description, image } = req.body;
 
         let conn;
 
-        try {
 
-            conn = await getConnection();
+    try {
+      conn = await getConnection();
 
             await conn.execute(
                 `BEGIN 
-                    THEM_NGHESI(:1,:2,:3,:4,:5,:6,:7); 
-                END;`,
-                [
-                    name,
-                    realName,
-                    new Date(birthDate), // convert sang Date
-                    nationality,
-                    genre,
-                    description,
-                    image
-                ],
+                THEM_NGHESI(
+                    :name,
+                    :realName,
+                    TO_DATE(:birthDate,'YYYY-MM-DD'),
+                    :nationality,
+                    :genre,
+                    :description,
+                    :image
+                ); 
+            END;`,
+                {
+                    name: name,
+                    realName: realName,
+                    birthDate: { val: new Date(birthDate), type: oracledb.DATE }  ,
+                    nationality: nationality,
+                    genre: genre,
+                    description: description,
+                    image: image
+                },
                 { autoCommit: true }
             );
 
-            res.json({ message: "Singer created successfully" });
+            res.json({ message: "Singer created" });
 
         } catch (err) {
 
-            console.error("Error:", err);
-            res.status(500).json({ error: err.message });
+            console.error(err);
+            res.status(500).json(err);
 
         } finally {
 
             if (conn) {
-                try {
-                    await conn.close();
-                } catch (err) {
-                    console.error("Close error:", err);
-                }
+                await conn.close();
             }
 
         }
