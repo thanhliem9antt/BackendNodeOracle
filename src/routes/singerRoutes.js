@@ -3,7 +3,9 @@ import express from "express";
         
 const router = express.Router();
 
+router.get("/", singerController.getAllSingers);
 router.post("/", singerController.createSinger);
 router.get("/index", singerController.index);
+
 
 export default router;
