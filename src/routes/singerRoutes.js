@@ -1,7 +1,6 @@
 import express from "express";
-import singerController from "../controller/singerController.js";
-
-
+    import singerController from "../controller/singerController.js";
+        
 const router = express.Router();
 
 router.post("/", singerController.createSinger);
