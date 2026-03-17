@@ -16,6 +16,8 @@ if (getConnection) {
   console.log("Database connection function imported successfully");
 }
 
+console.log("Starting server...");
+
 
 app.listen(3000, () => {
   console.log("Server running at http://localhost:3000");
